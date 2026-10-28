@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل مواصلات ود مدني</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        /* إطار الموبايل */
+        .phone-container {
+            width: 100%;
+            max-width: 380px;
+            height: 700px;
+            background-color: #ffffff;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 8px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* شاشات التطبيق */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        /* ----- شاشة الدخول والتسجيل (مستوحاة من التصميم) ----- */
+        .login-screen {
+            padding: 30px 20px;
+            background: linear-gradient(180deg, #fdfbf7 0%, #ffffff 100%);
+            overflow-y: auto;
+        }
+        .logo-area {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #113f59;
+            color: #d4af37;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 35px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .login-title {
+            text-align: center;
+            color: #113f59;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .login-sub {
+            text-align: center;
+            color: #777;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 5px;
+        }
+        .input-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            background-color: #fafafa;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .input-box:focus {
+            border-color: #113f59;
+            background-color: #fff;
+        }
+        .select-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            background-color: #fafafa;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        /* الأزرار العريضة الأنيقة */
+        .btn-primary {
+            width: 100%;
+            background-color: #113f59;
+            color: white;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-secondary {
+            width: 100%;
+            background-color: transparent;
+            color: #113f59;
+            padding: 12px;
+            border: 2px solid #113f59;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* ----- شاشة القائمة الرئيسية ----- */
+        .app-header {
+            background-color: #113f59;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .app-header h2 { font-size: 18px; }
+        .app-header p { font-size: 11px; opacity: 0.8; }
+        
+        .categories {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #f1f3f5;
+        }
+        .cat-btn {
+            background-color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+        .cat-btn.active {
+            background-color: #113f59;
+            color: white;
+        }
+
+        .drivers-list {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+        }
+        .driver-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .vehicle-img {
+            width: 55px;
+            height: 55px;
+            background-color: #f0f4f8;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+        .driver-info-area { flex: 1; }
+        .driver-name { font-size: 15px; font-weight: bold; color: #222; }
+        .driver-details { font-size: 12px; color: #666; margin: 4px 0; }
+        .call-btn {
+            display: block;
+            width: 100%;
+            background-color: #198754;
+            color: white;
+            text-align: center;
+            padding: 6px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .bottom-nav {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+
+        <!-- 1. شاشة تسجيل الدخول وإنشاء الحساب -->
+        <div id="loginScreen" class="screen login-screen active">
+            <div class="logo-area">
+                <div class="logo-icon">🛺</div>
+            </div>
+            <div class="login-title">تطبيق مواصلات ود مدني</div>
+            <div class="login-sub">مرحباً بك! سجل بياناتك لتظهر في دليل السائقين</div>
+
+            <form id="driverForm" onsubmit="registerDriver(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="driverName" class="input-box" placeholder="مثال: محمد أحمد علي" required>
+                </div>
+
+                <div class="form-group">
+                    <label>رقم الهاتف / الواتساب</label>
+                    <input type="tel" id="driverPhone" class="input-box" placeholder="0912345678" required>
+                </div>
+
+                <div class="form-group">
+                    <label>نوع الوسيلة</label>
+                    <select id="vehicleType" class="select-box" required>
+                        <option value="ركشة">🛺 ركشة</option>
+                        <option value="تكتك">🛺 تكتك</option>
+                        <option value="أمجاد">🚐 أمجاد</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>الموقف / المنطقة في مدني</label>
+                    <input type="text" id="driverLocation" class="input-box" placeholder="مثال: السوق الكبير، مارنجان..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>رقم اللوحة</label>
+                    <input type="text" id="plateNo" class="input-box" placeholder="مثال: خ 3 / 4589" required>
+                </div>
+
+                <button type="submit" class="btn-primary">تسجيل جديد ➕</button>
+                <button type="button" class="btn-secondary" onclick="showMainScreen()">تصفح الدليل كـ زبون 👁️</button>
+            </form>
+        </div>
+
+        <!-- 2. الشاشة الرئيسية للدليل -->
+        <div id="mainScreen" class="screen">
+            <div class="app-header">
+                <h2>🛺 دليل مواصلات ود مدني</h2>
+                <p>أبرز مواقف وسائقين عاصمة الجزيرة</p>
+            </div>
+
+            <div class="categories">
+                <button class="cat-btn active">الكل</button>
+                <button class="cat-btn">🛺 ركشة</button>
+                <button class="cat-btn">🛺 تكتك</button>
+                <button class="cat-btn">🚐 أمجاد</button>
+            </div>
+
+            <div class="drivers-list" id="driversContainer">
+                <!-- سائقين افتراضيين -->
+                <div class="driver-card">
+                    <div class="vehicle-img">🛺</div>
+                    <div class="driver-info-area">
+                        <div class="driver-name">العم عثمان حسن</div>
+                        <div class="driver-details">📍 السوق المركزي - مدني<br>🔢 لوحة: خ 3 / 8891</div>
+                        <a href="tel:0912345678" class="call-btn">📞 اتصال مباشر</a>
+                    </div>
+                </div>
+
+                <div class="driver-card">
+                    <div class="vehicle-img">🚐</div>
+                    <div class="driver-info-area">
+                        <div class="driver-name">سيف الدين إبراهيم</div>
+                        <div class="driver-details">📍 مدني - حنتوب<br>🔢 لوحة: خ 4 / 9912</div>
+                        <a href="tel:0911223344" class="call-btn">📞 اتصال مباشر</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <button class="btn-secondary" style="margin-top:0;" onclick="showLoginScreen()">➕ إضافة / تسجيل سائق جديد</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function showMainScreen() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('mainScreen').classList.add('active');
+        }
+
+        function showLoginScreen() {
+            document.getElementById('mainScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.add('active');
+        }
+
+        function registerDriver(event) {
+            event.preventDefault();
+
+            // أخذ البيانات من الحقول
+            const name = document.getElementById('driverName').value;
+            const phone = document.getElementById('driverPhone').value;
+            const type = document.getElementById('vehicleType').value;
+            const location = document.getElementById('driverLocation').value;
+            const plate = document.getElementById('plateNo').value;
+
+            // تحديد أيقونة الوسيلة
+            let icon = '🛺';
+            if(type === 'أمجاد') icon = '🚐';
+
+            // إنشاء الكرت الجديد
+            const newCard = document.createElement('div');
+            newCard.className = 'driver-card';
+            newCard.innerHTML = `
+                <div class="vehicle-img">${icon}</div>
+                <div class="driver-info-area">
+                    <div class="driver-name">${name}</div>
+                    <div class="driver-details">📍 ${location}<br>🔢 لوحة: ${plate}</div>
+                    <a href="tel:${phone}" class="call-btn">📞 اتصال مباشر</a>
+                </div>
+            `;
+
+            // إضافة الكرت لأعلى القائمة
+            const container = document.getElementById('driversContainer');
+            container.insertBefore(newCard, container.firstChild);
+
+            // الانتقال للشاشة الرئيسية
+            showMainScreen();
+
+            // تفريغ النموذج
+            document.getElementById('driverForm').reset();
+        }
+    </script>
+</body>
+</html>
